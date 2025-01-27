@@ -1,0 +1,53 @@
+{"tasks":[
+    {
+        "cve":"2022-24706", "service":"couchdb", "success":true, "vulnerable":true, 
+        "pcap_ref":[
+            "TBD"
+        ]
+    },{
+        "cve":"2021-43798", "service":"grafana", "success":true, "vulnerable":true, 
+        "pcap_ref":[
+            "TBD"
+        ]
+    },{
+        "cve":"2021-41773", "service":"apache http server", "success":true, "vulnerable":true, 
+        "pcap_ref":[
+            "TBD"
+        ]
+    },{
+        "cve":"2021-42013", "service":"apache http server", "success":true, "vulnerable":true, 
+        "pcap_ref":[
+            "TBD"
+        ]
+    },{
+        "cve":"2024-23897", "service":"jenkins", "success":true, "vulnerable":true, 
+        "pcap_ref":[
+            "TBD"
+        ]
+    },{
+        "cve":"2023-23752", "service":"joomla", "success":true, "vulnerable":true, 
+        "pcap_ref":[
+            "TBD"
+        ]
+    },{
+        "cve":"2021-44228", "service":"apache solr", "success":true, "vulnerable":true, 
+        "pcap_ref":[
+            "TBD"
+        ]
+    },{
+        "cve":"2016-5734", "service":"phpmyadmin", "success":true, "vulnerable":true, 
+        "pcap_ref":[
+            "TBD"
+        ]
+    },{
+        "cve":"2018-12613", "service":"phpmyadmin", "success":true, "vulnerable":true, 
+        "pcap_ref":[
+            "TBD"
+        ]
+    },{
+        "cve":"2022-46169", "service":"cacti", "success":true, "vulnerable":true, 
+        "pcap_ref":[
+            "TBD"
+        ]
+    }
+]}
