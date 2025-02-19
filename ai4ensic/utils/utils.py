@@ -14,6 +14,6 @@ def load_data():
     Returns:
         list: collection of tasks
     """
-    with open(f'{PROJECT}/data/tasks/data.json', 'r') as file:
+    with open('data/tasks/data.json', 'r') as file:
         games = json.loads(file.read())
     return games['tasks']

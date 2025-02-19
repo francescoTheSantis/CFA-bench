@@ -43,7 +43,7 @@ def main(args):
     openai.api_key = OPENAI_KEY
 
     # Initialize the Tools
-    tools = [ExtractFrame, FinalReport, WebQuickSearch] # ReadLogFile, GetCVEList
+    tools = [ExtractFrame, FinalReport, WebQuickSearch, ReadLogFile] # ReadLogFile, GetCVEList
 
     pcaps = load_data()  # Load the games
 
@@ -118,7 +118,7 @@ def main(args):
 
         # The task assigned to the agent
         task = """
-Analyze the provided PCAP (Packet Capture) file to accomplish the following tasks:
+Analyze the provided PCAP (Packet Capture) and logs files to accomplish the following tasks:
 
 1. Identify the name of the service or application involved.
 2. Determine the relevant CVE (Common Vulnerabilities and Exposures) based on the captured data.
@@ -127,8 +127,8 @@ Analyze the provided PCAP (Packet Capture) file to accomplish the following task
 5. Evaluate whether the attack was successful.
 
 Guidelines:
-- Begin by thoroughly analyzing the PCAP file to extract relevant information.
-- After the PCAP exploration, ensure that the CVE identification is accurate by cross-referencing details from external sources with the evidence found in the PCAP.
+- Begin by thoroughly analyzing the PCAP and logs files to extract relevant information.
+- After the exploratory analysis, ensure that the CVE identification is accurate by cross-referencing details from external sources with the evidence found in the PCAP.
 """
 
         observation, done = driver.reset(task=task)

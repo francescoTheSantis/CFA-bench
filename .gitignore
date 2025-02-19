@@ -3,3 +3,7 @@
 .venv
 *egg-info
 .env
+examples/
+experiments/
+results/
+log/

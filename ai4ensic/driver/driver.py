@@ -10,8 +10,21 @@ PROJECT = os.environ.get("PROJECT")
 class ForensicDriver():
     def __init__(self, game, llm, query_strategy):
         self.game = game
-        self.pcap_file = f"{PROJECT}/data/raw/CVE-{self.game['cve']}.pcap"
-        self.log_file = f"{PROJECT}/data/raw/CVE-{self.game['cve']}.log"
+        
+        event_pcap_files = [f for f in os.listdir(f'data/raw/eventID_{self.game['event']}') if f.endswith('.pcap')]
+        if event_pcap_files:
+            self.pcap_file = os.path.join(f'data/raw/eventID_{self.game['event']}', event_pcap_files[0])
+        else:
+            raise FileNotFoundError(f"No .pcap file found for eventID_{self.game['event']}")   
+
+        event_log_files = [f for f in os.listdir(f'data/raw/eventID_{self.game['event']}') if f.endswith('.log')]
+        if event_log_files:
+            self.log_file = [os.path.join(f'data/raw/eventID_{self.game['event']}', x) for x in event_pcap_files]
+        else:
+            raise FileNotFoundError(f"No .pcap file found for eventID_{self.game['event']}")  
+
+        #self.pcap_file = f"data/raw/CVE-{self.game['cve']}.pcap"
+        #self.log_file = f"{PROJECT}/data/raw/CVE-{self.game['cve']}.log"
         self.llm = llm
         self.query_strategy = query_strategy
 
