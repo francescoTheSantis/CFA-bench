@@ -85,8 +85,8 @@ class LLMClient():
                 seed=0
             )
 
-        # Use OpenAI o1 with a gpt-4o adapter for structured output
-        elif 'o1' in model:
+        # Use OpenAI o3 with a gpt-4o adapter for structured output
+        elif 'o3' in model:
             self.adapter = LLMClient(api_key=api_key, model="gpt-4o")
             self.client = OpenAI(api_key=api_key)
 
@@ -156,8 +156,8 @@ class LLMClient():
                 max_retries=5
             )
 
-        # Use OpenAI o1 with the gpt-4o based adapter for structured output
-        elif 'o1' in self.model:
+        # Use OpenAI 3 with the gpt-4o based adapter for structured output
+        elif 'o3' in self.model:
             # Convert the response model to a free text system prompt
             free_text_prompt = get_free_text_system_prompt(
                 system_prompt=system_prompt,

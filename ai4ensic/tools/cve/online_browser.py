@@ -65,7 +65,7 @@ class Context_generator:
                  llm='gpt-4o_client', 
                  embedder='multi-qa-mpnet-base-dot-v1', 
                  query_strategy='standard',
-                 n_documents_per_source=10,
+                 n_documents_per_source=5,
                  context_length=5,
                  verbose=False):
         

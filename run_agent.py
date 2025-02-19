@@ -52,7 +52,7 @@ def main(args):
     else:
         reset='Reset'
 
-    results_path = f'results/{args.reasoning}_agent_{reset}_results.csv'
+    results_path = f'results/{args.reasoning}_{args.LLM}.csv'
     dir_path = 'results'
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
@@ -129,6 +129,7 @@ Analyze the provided PCAP (Packet Capture) and logs files to accomplish the foll
 Guidelines:
 - Begin by thoroughly analyzing the PCAP and logs files to extract relevant information.
 - After the exploratory analysis, ensure that the CVE identification is accurate by cross-referencing details from external sources with the evidence found in the PCAP.
+- Use the online search tool only after the exploratory analysis has been completed to verify the findings and gather additional information.
 """
 
         observation, done = driver.reset(task=task)
@@ -201,9 +202,9 @@ Guidelines:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Use this script to run an LLM Agent with the goal of analyzing a PCAP file.")
     parser.add_argument("--LLM", type=str, default='gpt-4o', help="The name of the LLM to use.")
-    parser.add_argument("--max_iterations", type=int, default=51, help="The maximum number of iterations the agent can make.")
-    parser.add_argument("--reasoning", type=str, default='complete', help='The reasoining strategy emplyed by the agent')
+    parser.add_argument("--max_iterations", type=int, default=50, help="The maximum number of iterations the agent can make.")
+    parser.add_argument("--reasoning", type=str, default='react', help='The reasoining strategy emplyed by the agent')
     parser.add_argument("--epochs_to_reset", type=int, default=100, help='Number of epochs before the entire scratchpad is summarized.')
-    parser.add_argument("--query_strategy", type=str, default='expansion', help='The query strategy to use for the web search.')
+    parser.add_argument("--query_strategy", type=str, default='standard', help='The query strategy to use for the web search.')
     args = parser.parse_args()
     main(args)
