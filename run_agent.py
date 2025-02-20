@@ -43,7 +43,10 @@ def main(args):
     openai.api_key = OPENAI_KEY
 
     # Initialize the Tools
-    tools = [ExtractFrame, FinalReport, WebQuickSearch, ReadLogFile] # ReadLogFile, GetCVEList
+    if args.use_logs:
+        tools = [ExtractFrame, FinalReport, WebQuickSearch, ReadLogFile]
+    else:
+        tools = [ExtractFrame, FinalReport, WebQuickSearch] # ReadLogFile, GetCVEList
 
     pcaps = load_data()  # Load the games
 
@@ -52,7 +55,7 @@ def main(args):
     else:
         reset='Reset'
 
-    results_path = f'results/{args.reasoning}_{args.LLM}.csv'
+    results_path = f'results/{args.reasoning}_{args.LLM}_{args.use_logs}_{args.seed}.csv'
     dir_path = 'results'
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
@@ -67,10 +70,10 @@ def main(args):
         results.drop(columns=[x for x in columns if 'Unnamed' in x], inplace=True)
     else:
         print("Results file does not exist.")
-        results = pd.DataFrame(columns=['cve', 'service', 'successful', 'is_vulnerable', 'evidence', 'n_iterations', 'error'])
+        results = pd.DataFrame(columns=['id','cve', 'service', 'successful', 'is_vulnerable', 'n_iterations', 'error'])
 
     
-    log_path = f'log/{args.reasoning}'
+    log_path = f'log/{args.reasoning}_{args.LLM}_{args.use_logs}_{args.seed}'
     if not os.path.exists(log_path):
         os.makedirs(log_path)   
     
@@ -114,11 +117,12 @@ def main(args):
         print(game)
 
         # Initialize driver
-        driver = ForensicDriver(game=game, llm=llm, query_strategy=args.query_strategy)
+        driver = ForensicDriver(game=game, llm=llm, query_strategy=args.query_strategy, use_logs=args.use_logs)
 
         # The task assigned to the agent
-        task = """
-Analyze the provided PCAP (Packet Capture) and logs files to accomplish the following tasks:
+        if args.use_logs:
+            task = """
+Analyze the provided PCAP (Packet Capture) file to accomplish the following tasks:
 
 1. Identify the name of the service or application involved.
 2. Determine the relevant CVE (Common Vulnerabilities and Exposures) based on the captured data.
@@ -127,9 +131,23 @@ Analyze the provided PCAP (Packet Capture) and logs files to accomplish the foll
 5. Evaluate whether the attack was successful.
 
 Guidelines:
-- Begin by thoroughly analyzing the PCAP and logs files to extract relevant information.
-- After the exploratory analysis, ensure that the CVE identification is accurate by cross-referencing details from external sources with the evidence found in the PCAP.
+- Begin by thoroughly analyzing the PCAP file to extract relevant information. 
+- After the exploratory analysis, ensure that the CVE identification is accurate by cross-referencing details from external sources with the evidence found in the PCAP files.
 - Use the online search tool only after the exploratory analysis has been completed to verify the findings and gather additional information.
+"""
+        else:
+            task = """
+Analyze the provided PCAP (Packet Capture) file to accomplish the following tasks:
+
+1. Analyze the PCAP in order to have an understanding of the network traffic.
+2. Identify the services and applications involved in the network traffic.
+3. Determine the relevant CVEs (Common Vulnerabilities and Exposures).
+4. Assess whether the services or applications are vulnerable to the identified attacks.
+5. Evaluate whether the attacks were successful.
+
+HINTS:
+- Use the tools provided to extract and expand the data from the PCAP file.
+- Utilize the online search tool to verify the findings and gather additional information.
 """
 
         observation, done = driver.reset(task=task)
@@ -179,16 +197,18 @@ Guidelines:
 
         error = observation if error_flag else False
         if done:
-            d = {'cve': get_occurrences(final_answer, "Identified CVE: "), 
+            d = {'id': pcaps[i]['event'],
+                'cve': get_occurrences(final_answer, "Identified CVE: "), 
                 'service': get_occurrences(final_answer, "Affected Service: "), 
                 'successful': get_occurrences(final_answer, "Attack: "), 
                 'is_vulnerable': get_occurrences(final_answer, "Is Service Vulnerable: "),
-                'evidence': get_occurrences(final_answer, "Critical PCAP entries: ", ""), 
+                'evidence': 'Evidence not required', #get_occurrences(final_answer, "Critical PCAP entries: ", ""), 
                 'n_iterations':epochs,
                 'error': error}
         else:
              placeholder = 'No answer'
-             d = {'cve': placeholder, 
+             d = {'id': pcaps[i]['event'],
+                'cve': placeholder, 
                 'service': placeholder, 
                 'successful': placeholder, 
                 'is_vulnerable': placeholder,
@@ -206,5 +226,7 @@ if __name__ == "__main__":
     parser.add_argument("--reasoning", type=str, default='react', help='The reasoining strategy emplyed by the agent')
     parser.add_argument("--epochs_to_reset", type=int, default=100, help='Number of epochs before the entire scratchpad is summarized.')
     parser.add_argument("--query_strategy", type=str, default='standard', help='The query strategy to use for the web search.')
+    parser.add_argument("--use_logs", type=bool, default=False, help='Use logs to provide additional information.')
+    parser.add_argument("--seed", type=int, default=0, help='Seed of the experiment.')
     args = parser.parse_args()
     main(args)

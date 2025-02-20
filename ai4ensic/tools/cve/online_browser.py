@@ -36,12 +36,15 @@ class WebQuickSearch(BaseModel):
 
     def run(self, llm_model, query_strategy):
         print('Original search query:', self.query)
-        rag_model = Context_generator(llm=llm_model, 
-                                          query_strategy=query_strategy, 
-                                          n_documents_per_source=10,
-                                          verbose = True)
-        
-        response = rag_model.invoke(self.query)
+        try:
+            rag_model = Context_generator(llm=llm_model, 
+                                            query_strategy=query_strategy, 
+                                            n_documents_per_source=10,
+                                            verbose = True)
+            
+            response = rag_model.invoke(self.query)
+        except Exception as e:
+            response = f"An error occurred during the web search."
         return response
 
 
@@ -65,7 +68,7 @@ class Context_generator:
                  llm='gpt-4o_client', 
                  embedder='multi-qa-mpnet-base-dot-v1', 
                  query_strategy='standard',
-                 n_documents_per_source=5,
+                 n_documents_per_source=10,
                  context_length=5,
                  verbose=False):
         

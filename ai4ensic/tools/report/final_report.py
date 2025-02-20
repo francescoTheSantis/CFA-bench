@@ -9,7 +9,7 @@ class FinalReport(BaseModel):
     affected_service: str = Field(...)
     successfull_attack: bool = Field(...)
     is_vulnerable: bool = Field(...)
-    critical_pcap_items: List = Field(...)
+    #critical_pcap_items: List = Field(...)
 
     def run(self):
         final_report = f'FINAL REPORT:\n'
@@ -22,8 +22,8 @@ class FinalReport(BaseModel):
             final_report += f'Attack: Succeeded\n'
         else:
             final_report += f'Attack: Failed\n'
-        criticalities = '\n'.join([f'*{x}' for x in self.critical_pcap_items])
-        final_report += f'Critical PCAP entries: {criticalities}'
+        #criticalities = '\n'.join([f'*{x}' for x in self.critical_pcap_items])
+        #final_report += f'Critical PCAP entries: {criticalities}'
         
         return final_report
 

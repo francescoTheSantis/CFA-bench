@@ -8,7 +8,7 @@ PROJECT = os.environ.get("PROJECT")
 
 
 class ForensicDriver():
-    def __init__(self, game, llm, query_strategy):
+    def __init__(self, game, llm, query_strategy, use_logs):
         self.game = game
         
         event_pcap_files = [f for f in os.listdir(f'data/raw/eventID_{self.game['event']}') if f.endswith('.pcap')]
@@ -27,6 +27,23 @@ class ForensicDriver():
         #self.log_file = f"{PROJECT}/data/raw/CVE-{self.game['cve']}.log"
         self.llm = llm
         self.query_strategy = query_strategy
+        self.use_logs = use_logs
+
+    def rdlogs(self):
+        try:
+            content = ""
+            for log_file_path in self.log_file:
+                with open(log_file_path, 'r', encoding="utf-8", errors="replace") as file:
+                    content = file.read()
+                content += "\n\n"
+        except Exception as e:
+            content = f"Error: {e}"
+        
+        if len(content)>0:
+            content = f"Logs:\n{content}"
+        else:
+            content = "No logs available"
+        return content
 
     def reset(self, task: str):
         packets = rdpcap(self.pcap_file)
@@ -36,6 +53,10 @@ class ForensicDriver():
                pkt in enumerate(packets)]
         out = '\n'.join(out)
         obs = f'{obs}\n{out}'
+
+        if self.use_logs:
+            logs = self.rdlogs()
+            obs = f'{obs}\n\n{logs}'
         return obs, False
 
     def step(self, tool):
