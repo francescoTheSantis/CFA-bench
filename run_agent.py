@@ -227,6 +227,6 @@ if __name__ == "__main__":
     parser.add_argument("--epochs_to_reset", type=int, default=100, help='Number of epochs before the entire scratchpad is summarized.')
     parser.add_argument("--query_strategy", type=str, default='standard', help='The query strategy to use for the web search.')
     parser.add_argument("--use_logs", type=bool, default=False, help='Use logs to provide additional information.')
-    parser.add_argument("--seed", type=int, default=0, help='Seed of the experiment.')
+    parser.add_argument("--seed", type=int, default=2, help='Seed of the experiment.')
     args = parser.parse_args()
     main(args)

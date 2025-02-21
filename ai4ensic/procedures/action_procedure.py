@@ -48,7 +48,7 @@ class ActionProcedure(BaseProcedure):
             the given inputs using the LLM.
     """
 
-    def run(self, summary: str, last_step: ReActChain, thought: str, actions: list):
+    def run(self, summary: str, scratchpad: list, last_step: ReActChain, thought: str, actions: list):
         """Executes the action reasoning procedure based on the current context.
 
         This method formats the prompt using the given summary, the previous step 
@@ -77,7 +77,7 @@ class ActionProcedure(BaseProcedure):
         llm_out = self.llm.invoke(
             response_model=ActionModel.create(actions),
             system_prompt=prompt,
-            messages=[]
+            messages=scratchpad
         )
 
         return llm_out

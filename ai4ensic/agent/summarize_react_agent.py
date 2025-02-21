@@ -75,7 +75,7 @@ class SummariseReActAgent(BaseAgent):
         react_procedure = ReActProcedure(self.llm, REACT_TEMPLATE)
         llm_out = react_procedure.run(
             context=summary,
-            scratchpad=[],
+            scratchpad=self.scratchpad,
             last_step=self.last_step,
             actions=self.tools
         )

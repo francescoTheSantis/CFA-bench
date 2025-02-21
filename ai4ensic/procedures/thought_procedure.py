@@ -38,7 +38,7 @@ class ThoughtProcedure(BaseProcedure):
             on the given inputs using the LLM.
     """
 
-    def run(self, summary: str, last_step: ReActChain):
+    def run(self, summary: str, scratchpad: list, last_step: ReActChain):
         """Execute the summary reasoning procedure based on the current task and
         agent scratchpad
 
@@ -60,7 +60,7 @@ class ThoughtProcedure(BaseProcedure):
         llm_out = self.llm.invoke(
             response_model=ThoughtModel,
             system_prompt=prompt,
-            messages=[]
+            messages=scratchpad
         )
 
         return llm_out

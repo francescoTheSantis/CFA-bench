@@ -82,14 +82,14 @@ class AutonomousAgent(BaseAgent):
 
         # Thought reasoning procedure: produce a thought on the next action
         thought_procedure = ThoughtProcedure(self.llm, THOUGHT_TEMPLATE)
-        llm_out = thought_procedure.run(summary, self.last_step)
+        llm_out = thought_procedure.run(summary, self.scratchpad, self.last_step)
         thought = llm_out.thought
         cprint(f'Thought: {thought}', color='cyan')
 
         # Action reasoning procedure: provide the next action
         action_procedure = ActionProcedure(self.llm, ACTION_TEMPLATE)
         llm_out = action_procedure.run(
-            summary, self.last_step, thought, self.tools)
+            summary, self.scratchpad, self.last_step, thought, self.tools)
         action = llm_out.action
         tool = action.__class__.__name__
         cprint(f'Action: {tool}({action})', color='magenta')
